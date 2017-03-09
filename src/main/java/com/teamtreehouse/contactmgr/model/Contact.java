@@ -1,6 +1,8 @@
 package com.teamtreehouse.contactmgr.model;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by kpfromer on 3/7/17.
@@ -9,11 +11,13 @@ import javax.persistence.*;
 //By Default the table name for the data is the class name
 //We can change this by changing @Entity to @Entity(name="WHATEVER")
 @Entity
+@Table
 public class Contact {
     //@Id is for PRIMARY KEY for table
     //@GeneratedValue allows for hibernate to auto generate id, strategy is used for the way it does so
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column
     private int id;
 
     @Column
@@ -25,18 +29,20 @@ public class Contact {
     @Column
     private String email;
 
-    @Column
-    private Long phone;
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinColumn
+    private List<Phone> phones = new ArrayList<>();
 
 
     //Default constructor for JPA
-    public Contact(){}
+    public Contact() {
+    }
 
-    public Contact(ContactBuilder builder){
+    public Contact(ContactBuilder builder) {
         this.firstName = builder.firstName;
         this.lastName = builder.lastName;
         this.email = builder.email;
-        this.phone = builder.phone;
+        this.phones = builder.phones;
     }
 
     @Override
@@ -46,7 +52,7 @@ public class Contact {
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
                 ", email='" + email + '\'' +
-                ", phone=" + phone +
+                ", phones=" + phones.toString() +
                 '}';
     }
 
@@ -74,12 +80,12 @@ public class Contact {
         this.lastName = lastName;
     }
 
-    public Long getPhone() {
-        return phone;
+    public List<Phone> getPhones() {
+        return phones;
     }
 
-    public void setPhone(Long phone) {
-        this.phone = phone;
+    public void setPhones(ArrayList<Phone> phones) {
+        this.phones = phones;
     }
 
     public String getEmail() {
@@ -91,30 +97,29 @@ public class Contact {
     }
 
 
-
-    public static class ContactBuilder{
+    public static class ContactBuilder {
         private int id;
         private String firstName;
         private String lastName;
         private String email;
-        private Long phone;
+        private ArrayList<Phone> phones;
 
-        public ContactBuilder(String firstName, String lastName){
+        public ContactBuilder(String firstName, String lastName) {
             this.firstName = firstName;
             this.lastName = lastName;
         }
 
-        public ContactBuilder withEmail(String email){
+        public ContactBuilder withEmail(String email) {
             this.email = email;
             return this;
         }
 
-        public ContactBuilder withPhone(long phone){
-            this.phone = phone;
+        public ContactBuilder withPhones(ArrayList<Phone> phone) {
+            this.phones = phone;
             return this;
         }
 
-        public Contact build(){
+        public Contact build() {
             return new Contact(this);
         }
 

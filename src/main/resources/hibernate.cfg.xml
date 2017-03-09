@@ -16,6 +16,7 @@
 
         <!-- Names the annotated entity classes -->
         <mapping class="com.teamtreehouse.contactmgr.model.Contact"/>
+        <mapping class="com.teamtreehouse.contactmgr.model.Phone"/>
 
     </session-factory>
 </hibernate-configuration>
